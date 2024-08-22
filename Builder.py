@@ -18,6 +18,7 @@ class GraphBuilder:
 		self.nodes = {}
 		
 		self.graph_directed = kwargs.get('graph_directed')
+		self.graph_init = kwargs.get('graph_init')
 		
 	def build_add_node(self, value, g):
 		identifier = id(value)
@@ -134,10 +135,16 @@ class GraphBuilder:
 			
 			
 	def build(self):
-		if self.graph_directed:
-			g = nx.DiGraph()
+		if self.graph_init is not None:
+			if isinstance(self.graph_init, tuple):
+				g = self.graph_init[0].__call__(*self.graph_init[1:])
+			else:
+				g = self.graph_init.__call__()
 		else:
-			g = nx.Graph()
+			if self.graph_directed:
+				g = nx.DiGraph()
+			else:
+				g = nx.Graph()
 		
 		self.parse(self.ast, g)
 		

@@ -2,11 +2,13 @@
 # -*- coding: utf-8 -*-
 
 
-from Factory import Graph		
+from Factory import Graph
+import networkx as nx
 		
-@Graph(directed=True)
+@Graph(directed=True, graph_init=lambda: nx.ladder_graph(5))
 def g():
-	('A') <{}> ('B')
+	a = (1)
+	a -{}> a
 	
 
 

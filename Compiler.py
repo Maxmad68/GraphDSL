@@ -6,11 +6,13 @@ from GraphAst import *
 from Exceptions import *
 
 class GraphCompiler:
-	def __init__(self, b, debug_tokens=False, **kwargs):
+	def __init__(self, source, debug_tokens=False, **kwargs):
 		
 		self.graph_directed = kwargs.get('graph_directed')
+		self.default_node_params = {k: GraphAstLitteralValue(v) for k, v in kwargs.get('default_node_params').items()}
+		self.default_edge_params = {k: GraphAstLitteralValue(v) for k, v in kwargs.get('default_edge_params').items()}
 		
-		self.tokens = tokenize.tokenize(b)
+		self.tokens = tokenize.tokenize(source)
 		
 		# Debug
 		if debug_tokens:
@@ -43,7 +45,7 @@ class GraphCompiler:
 		if vt is None:
 			raise GraphSyntaxException.Expected('(value),"}"')
 		elif vt.type == tokenize.OP and vt.string == ')': # Empty node
-			return GraphAstNodedef(None)
+			return GraphAstNodedef(None, {**self.default_node_params})
 		
 		val = self.parse_value(vt)
 	
@@ -55,7 +57,8 @@ class GraphCompiler:
 			raise GraphSyntaxException.Expected('")",","', closing.string)
 			
 		elif closing.type == tokenize.OP and closing.string == ')': # (42)
-			return GraphAstNodedef(val, None)
+			return GraphAstNodedef(val, {**self.default_node_params})
+			
 		elif closing.type == tokenize.OP and closing.string == ',': # (42, {abc:def})
 			n = next(self.tokens, None)
 			if n is None:
@@ -71,7 +74,7 @@ class GraphCompiler:
 			elif not (n.type == tokenize.OP and n.string == ')'):
 				raise GraphSyntaxException.Expected('")"', n)
 				
-			return GraphAstNodedef(val, data)
+			return GraphAstNodedef(val, {**self.default_node_params, **data})
 			
 			
 				
@@ -138,7 +141,8 @@ class GraphCompiler:
 		if not (n.type == tokenize.OP and n.string == '{'):
 			raise GraphSyntaxException.Expected('"{"', n.string) 
 			
-		data = self.parse_dict()
+		
+		data = {**self.default_edge_params, **self.parse_dict()}
 		return data
 		
 		

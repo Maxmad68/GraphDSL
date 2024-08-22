@@ -5,9 +5,13 @@
 from Factory import Graph
 import networkx as nx
 		
-@Graph(directed=True)
+@Graph(
+	directed=True,
+	default_node_params={'color': 'black'},
+	default_edge_params={'test':'hello'}
+)
 def g():
-	(1, {color:'red'})	-{coucou:42}>	(2, {color: 'blue'})		-{}>		(3, {color:'yellow'})
+	(1, {color:'red'})	-{coucou:42}>	(2, {color: 'blue'})		-{}>		(3)
 		
 
 

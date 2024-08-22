@@ -13,10 +13,20 @@ class GraphFactory:
 		self.directed = kwargs.get('directed', True)
 		self.debug_tokens = kwargs.get('debug_tokens', False)
 		self.graph_init = kwargs.get('graph_init', None)
+		self.default_node_params = kwargs.get('default_node_params', {})
+		self.default_edge_params = kwargs.get('default_edge_params', {})
 		
 		source = inspect.getsource(f)
 		b = BytesIO(source.encode('utf-8')).readline
-		self.parser = GraphCompiler(b, self.debug_tokens, graph_directed=self.directed)
+		
+		self.parser = GraphCompiler(
+			b,
+			self.debug_tokens,
+			graph_directed=self.directed,
+			default_node_params=self.default_node_params,
+			default_edge_params=self.default_edge_params
+		)
+		
 		self.ast = self.parser.compile_to_ast()
 		
 	def __call__(self, *args, **kwargs):

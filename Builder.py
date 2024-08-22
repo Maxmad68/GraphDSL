@@ -118,12 +118,12 @@ class GraphBuilder:
 	
 	def parse_get_value(self, node):
 		assert isinstance(node, GraphAstGetValue)
-		print (node.name)
 		return self.parameters[node.name]
 	
 	
 	def parse_value(self, node):
 		assert isinstance(node, GraphAstValue)
+		
 		
 		if isinstance(node, GraphAstLitteralValue):
 			v = self.parse_literal_value(node)

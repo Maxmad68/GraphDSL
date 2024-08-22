@@ -6,7 +6,10 @@ from GraphAst import *
 from Exceptions import *
 
 class GraphCompiler:
-	def __init__(self, b, debug_tokens=False):
+	def __init__(self, b, debug_tokens=False, **kwargs):
+		
+		self.graph_directed = kwargs.get('graph_directed')
+		
 		self.tokens = tokenize.tokenize(b)
 		
 		# Debug
@@ -119,7 +122,14 @@ class GraphCompiler:
 		if right_token is None:
 			raise GraphSyntaxException.Expected('">", "-"')
 		elif not (right_token.type == tokenize.OP and right_token.string in ('>','-')):
-			raise GraphSyntaxException.Expected('">", "-"', right_token.string)
+			raise GraphSyntaxException.Expected('">", "-"', right_token)
+			
+		if self.graph_directed:
+			if left_token.string == '-' and right_token.string == '-':
+				raise GraphException("Can't add undirected edge to directed graph")
+		else:
+			if left_token.string != '-' or right_token.string != '-':
+				raise GraphException("Can't add directed edge to undirected graph")
 			
 		right_node = self.parse_node()
 		
@@ -160,7 +170,7 @@ class GraphCompiler:
 				node = self.parse_node()
 				return GraphAstAssignation(t.string, node)
 	
-			elif n.type == tokenize.OP and n.string == '-': # a -{}> ...
+			elif n.type == tokenize.OP and n.string in ('<','-'): # a -{}> ...
 				edge = self.parse_edge(n, GraphAstGetNode(t.string))
 				return edge
 	
@@ -175,7 +185,7 @@ class GraphCompiler:
 			tree = self.parse_nodedef()
 			n = next(self.tokens, tokenize.ENDMARKER)
 	
-			if n.type == tokenize.OP and n.string == '-': # () -{}> ...
+			if n.type == tokenize.OP and n.string in ('<', '-'): # () -{}> ...
 				return self.parse_edge(n, tree)
 	
 			elif n.type == tokenize.NEWLINE:  # ()

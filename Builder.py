@@ -6,7 +6,7 @@ import networkx as nx
 import uuid
 
 class GraphBuilder:
-	def __init__(self, ast):
+	def __init__(self, ast, **kwargs):
 		self.ast = ast
 		
 		self.parameters = {}
@@ -16,6 +16,8 @@ class GraphBuilder:
 		self.built_nodes = []
 		
 		self.nodes = {}
+		
+		self.graph_directed = kwargs.get('graph_directed')
 		
 	def build_add_node(self, value, g):
 		identifier = id(value)
@@ -70,9 +72,16 @@ class GraphBuilder:
 		n1 = self.parse_node(node.node1, g)
 		n2 = self.parse_node(node.node2, g)
 		
-		e = self.build_add_edge(n1, n2, node.value, g)
-		#e = g.add_edge(n1, n2, data=node.value)
-		
+		if self.graph_directed and node.left_char == '-' and node.right_char == '-':
+			self.build_add_edge(n1, n2, node.value, g)
+		elif node.left_char == '-' and node.right_char == '>':
+			self.build_add_edge(n1, n2, node.value, g)
+		elif node.left_char == '<' and node.right_char == '-':
+			self.build_add_edge(n2, n1, node.value, g)
+		elif node.left_char == '<' and node.right_char == '>':
+			self.build_add_edge(n1, n2, node.value, g)
+			self.build_add_edge(n2, n1, node.value, g)
+			
 		return n1
 	
 	
@@ -125,7 +134,10 @@ class GraphBuilder:
 			
 			
 	def build(self):
-		g = nx.DiGraph()
+		if self.graph_directed:
+			g = nx.DiGraph()
+		else:
+			g = nx.Graph()
 		
 		self.parse(self.ast, g)
 		

@@ -2,12 +2,11 @@
 # -*- coding: utf-8 -*-
 
 
-from Decorator import Graph		
+from Factory import Graph		
 		
-@Graph
+@Graph(directed=True)
 def g():
-	('A') -{}> ('B') -{}> ('E') -{}> ('D') -{}> ('C') -{}> ('B')
-	('A') -{}> ('D') -{}> ('B')
+	('A') <{}> ('B')
 	
 
 

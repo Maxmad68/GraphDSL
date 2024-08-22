@@ -28,7 +28,10 @@ class IGraphBackend(Backend):
 	def create_undirected_graph(self):
 		return ig.Graph(directed=False)
 	
-	def add_node(self, graph, value, data):		
+	def add_node(self, graph, value, data):
+		if value is None:
+			return graph.add_vertex(name=value, attr=data)
+		
 		if value in self.nodes.keys():
 			return self.nodes[value]
 		

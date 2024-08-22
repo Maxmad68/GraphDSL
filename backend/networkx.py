@@ -3,6 +3,7 @@
 
 from .abstract import Backend
 from Exceptions import GraphBackendException
+import uuid
 
 try:
 	import networkx as nx

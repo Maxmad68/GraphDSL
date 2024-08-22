@@ -6,14 +6,15 @@ from Factory import Graph
 import networkx as nx
 		
 @Graph(
-	directed=True,
-	default_node_params={'color': 'black'},
-	default_edge_params={'test':'hello'}
+	directed=False,
 )
 def g():
-	(1, {color:'red'})	-{coucou:42}>	(2, {color: 'blue'})		-{}>		(3)
-		
+	('Esther') -{}- ('Claire') -{}- ('Alice') -{}- ('Bob')
+	('Esther') -{}- ('Dennis') -{}- ('George') -{}- ('Franck')
+	('Dennis') -{}- ('Claire') -{}- ('Franck') -{}- ('Alice')
 
+
+print (g.ast)
 
 p = g()
 print (p)
@@ -28,7 +29,7 @@ import matplotlib.pyplot
 
 fig = matplotlib.pyplot.figure()
 pos = nx.spring_layout(p)
-nx.draw(p, pos, ax=fig.add_subplot(), node_color=[node[1]['color'] for node in p.nodes(data=True)])
+nx.draw(p, pos, ax=fig.add_subplot())#, node_color=[node[1]['color'] for node in p.nodes(data=True)])
 nx.draw_networkx_edge_labels(p, pos)
 nx.draw_networkx_labels(p, pos)
 

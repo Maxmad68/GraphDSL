@@ -79,7 +79,7 @@ class GraphBuilder:
 		n1 = self.parse_node(node.node1, g)
 		n2 = self.parse_node(node.node2, g)
 		
-		if self.graph_directed and node.left_char == '-' and node.right_char == '-':
+		if not self.graph_directed and node.left_char == '-' and node.right_char == '-':
 			self.build_add_edge(n1, n2, node.data, g)
 		elif node.left_char == '-' and node.right_char == '>':
 			self.build_add_edge(n1, n2, node.data, g)

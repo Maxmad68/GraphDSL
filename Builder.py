@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 from types import ModuleType
-import uuid
 
 from GraphAst import *
 
@@ -111,6 +110,9 @@ class GraphBuilder:
 	
 	
 	def parse_value(self, node):
+		if node is None:
+			return None
+		
 		assert isinstance(node, GraphAstValue)
 		
 		

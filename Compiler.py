@@ -184,7 +184,7 @@ class GraphCompiler:
 #		print ('\t', t)
 		
 		tree = None
-		if t.type == tokenize.NAME: # a ...
+		if t.type == tokenize.NAME: # a ...			
 			n = next(self.tokens, tokenize.ENDMARKER)
 			if n.type == tokenize.OP and n.string == '=': # a = ...
 		
@@ -204,6 +204,7 @@ class GraphCompiler:
 			elif n.type == tokenize.OP and n.string in ('<','-'): # a -{}> ...
 				edge = self.parse_edge(n, GraphAstGetNode(t.string))
 				return edge
+				
 	
 			elif n.type == tokenize.NEWLINE: # 'a'
 				return GraphAstGetNode(t.string)

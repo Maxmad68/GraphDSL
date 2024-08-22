@@ -12,13 +12,16 @@ import networkx as nx
 	directed=False,
 )
 def g():
-	('Esther') -{}- ('Claire') -{}- ('Alice') -{}- ('Bob')
-	('Esther') -{}- ('Dennis') -{}- ('George') -{}- ('Franck')
-	('Dennis') -{}- ('Claire') -{}- ('Franck') -{}- ('Alice')
-
-
+	a = ()
+	b = ()
+	c = ()
 	
-p = g(backend=backend.networkx)
+	a -{}- b -{}- c -{}- a
+
+
+print (g.ast)
+	
+p = g()
 print (p)
 
 

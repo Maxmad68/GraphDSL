@@ -3,7 +3,10 @@
 
 
 from Factory import Graph
+import backend.networkx
+import backend.igraph
 import networkx as nx
+		
 		
 @Graph(
 	directed=False,
@@ -14,12 +17,13 @@ def g():
 	('Dennis') -{}- ('Claire') -{}- ('Franck') -{}- ('Alice')
 
 
-print (g.ast)
-
-p = g()
+	
+p = g(backend=backend.networkx)
 print (p)
 
 
+
+#
 import sys
 from networkx.drawing.nx_agraph import write_dot
 import networkx as nx
@@ -37,4 +41,18 @@ matplotlib.use("Agg")
 fig.savefig("/Users/maxime/graph.png")
 
 
-#write_dot(p, sys.stdout)
+
+
+
+
+
+
+p = g(backend=backend.igraph)
+print (p)
+
+import igraph as ig
+import matplotlib.pyplot as plt
+fig, ax = plt.subplots()
+ig.plot(p, target=ax)
+
+fig.savefig("/Users/maxime/graph2.png")

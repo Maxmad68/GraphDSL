@@ -25,3 +25,7 @@ class GraphNotDefinedException(GraphException):
 	@staticmethod
 	def NotDefined(name):
 		return GraphNotDefinedException(f'Parameter "{name}" not defined')
+	
+
+class GraphBackendException(GraphException):
+	pass

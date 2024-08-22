@@ -5,6 +5,7 @@ import inspect
 from io import BytesIO
 from Builder import GraphBuilder
 from Compiler import GraphCompiler
+import backend
 
 class GraphFactory:
 	def __init__(self, f, **kwargs):
@@ -12,7 +13,6 @@ class GraphFactory:
 		# Get parameters
 		self.directed = kwargs.get('directed', True)
 		self.debug_tokens = kwargs.get('debug_tokens', False)
-		self.graph_init = kwargs.get('graph_init', None)
 		self.default_node_params = kwargs.get('default_node_params', {})
 		self.default_edge_params = kwargs.get('default_edge_params', {})
 		
@@ -29,10 +29,20 @@ class GraphFactory:
 		
 		self.ast = self.parser.compile_to_ast()
 		
-	def __call__(self, *args, **kwargs):
-		builder = GraphBuilder(self.ast, graph_directed=self.directed, graph_init=self.graph_init)
-		builder.parameters = kwargs
+	def __call__(self, parameters={}, backend=None, **kwargs):
+		
+		graph_init = kwargs.get('graph_init', None)
+		
+		builder = GraphBuilder(
+			self.ast,
+			backend,
+			graph_directed=self.directed,
+			graph_init=graph_init
+		)
+		
+		builder.parameters = {**parameters}
 		return builder.build()
+	
 	
 	
 def Graph(**kwargs):

@@ -1,48 +1,29 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from GraphAst import *
-import networkx as nx
+from types import ModuleType
 import uuid
 
+from GraphAst import *
+
 class GraphBuilder:
-	def __init__(self, ast, **kwargs):
+	def __init__(self, ast, backend, **kwargs):
 		self.ast = ast
+		
+		if isinstance(backend, ModuleType):
+			backend = backend.default
+			
+		self.backend = backend()
 		
 		self.parameters = {}
 		
 		self.definitions = {}
 		
 		self.built_nodes = []
-		
-		self.nodes = {}
-		
+				
 		self.graph_directed = kwargs.get('graph_directed')
 		self.graph_init = kwargs.get('graph_init')
-		
-	def build_add_node(self, value, g, data):
-		identifier = id(value)
-		if value is None:
-			identifier = value = uuid.uuid4()
-			
-		if data is None:
-			g.add_node(value)
-		else:
-			parsed_data = {k: self.parse_value(v) for k, v in data.items()}
-			
-			g.add_node(value, **parsed_data)
-		
-		
-		self.nodes[identifier] = value
-		return identifier
 	
-	def build_add_edge(self, n1, n2, data, g):
-		node1 = self.nodes[n1]
-		node2 = self.nodes[n2]
-		
-		parsed_data = {k: self.parse_value(v) for k, v in data.items()}
-		
-		g.add_edge(node1, node2, **parsed_data)
 		
 	def parse_assignation(self, node, g):
 		assert isinstance(node, GraphAstAssignation)
@@ -69,7 +50,12 @@ class GraphBuilder:
 		
 		v = self.parse_value(node.value)
 		
-		n = self.build_add_node(v, g, node.data)
+		if node.data is None:
+			parsed_data = None
+		else:
+			parsed_data = {k: self.parse_value(v) for k, v in node.data.items()}
+		
+		n = self.backend.add_node(g, v, parsed_data)
 		
 		return n
 	
@@ -79,15 +65,18 @@ class GraphBuilder:
 		n1 = self.parse_node(node.node1, g)
 		n2 = self.parse_node(node.node2, g)
 		
+		
+		parsed_data = {k: self.parse_value(v) for k, v in node.data.items()}
+		
 		if not self.graph_directed and node.left_char == '-' and node.right_char == '-':
-			self.build_add_edge(n1, n2, node.data, g)
+			self.backend.add_edge(g, n1, n2, parsed_data)
 		elif node.left_char == '-' and node.right_char == '>':
-			self.build_add_edge(n1, n2, node.data, g)
+			self.backend.add_edge(g, n1, n2, parsed_data)
 		elif node.left_char == '<' and node.right_char == '-':
-			self.build_add_edge(n2, n1, node.data, g)
+			self.backend.add_edge(g, n2, n1, parsed_data)
 		elif node.left_char == '<' and node.right_char == '>':
-			self.build_add_edge(n1, n2, node.data, g)
-			self.build_add_edge(n2, n1, node.data, g)
+			self.backend.add_edge(g, n1, n2, parsed_data)
+			self.backend.add_edge(g, n2, n1, parsed_data)
 			
 		return n1
 	
@@ -148,9 +137,9 @@ class GraphBuilder:
 				g = self.graph_init.__call__()
 		else:
 			if self.graph_directed:
-				g = nx.MultiDiGraph()
+				g = self.backend.create_directed_graph()
 			else:
-				g = nx.MultiGraph()
+				g = self.backend.create_undirected_graph()
 		
 		self.parse(self.ast, g)
 		

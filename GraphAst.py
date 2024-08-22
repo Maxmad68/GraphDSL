@@ -39,12 +39,13 @@ class GraphAstGetNode (GraphNode):
 @dataclass
 class GraphAstNodedef (GraphNode):
 	value: object
+	data: dict
 	
 @dataclass
 class GraphAstEdge (GraphNode):
 	node1: GraphNode
 	node2: GraphNode
-	value: object
+	data: dict
 	left_char: str
 	right_char: str
 	

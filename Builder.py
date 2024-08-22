@@ -20,11 +20,17 @@ class GraphBuilder:
 		self.graph_directed = kwargs.get('graph_directed')
 		self.graph_init = kwargs.get('graph_init')
 		
-	def build_add_node(self, value, g):
+	def build_add_node(self, value, g, data):
 		identifier = id(value)
 		if value is None:
 			identifier = value = uuid.uuid4()
-		g.add_node(value)
+			
+		if data is None:
+			g.add_node(value)
+		else:
+			parsed_data = {k: self.parse_value(v) for k, v in data.items()}
+			
+			g.add_node(value, **parsed_data)
 		
 		
 		self.nodes[identifier] = value
@@ -63,7 +69,7 @@ class GraphBuilder:
 		
 		v = self.parse_value(node.value)
 		
-		n = self.build_add_node(v, g)
+		n = self.build_add_node(v, g, node.data)
 		
 		return n
 	
@@ -74,14 +80,14 @@ class GraphBuilder:
 		n2 = self.parse_node(node.node2, g)
 		
 		if self.graph_directed and node.left_char == '-' and node.right_char == '-':
-			self.build_add_edge(n1, n2, node.value, g)
+			self.build_add_edge(n1, n2, node.data, g)
 		elif node.left_char == '-' and node.right_char == '>':
-			self.build_add_edge(n1, n2, node.value, g)
+			self.build_add_edge(n1, n2, node.data, g)
 		elif node.left_char == '<' and node.right_char == '-':
-			self.build_add_edge(n2, n1, node.value, g)
+			self.build_add_edge(n2, n1, node.data, g)
 		elif node.left_char == '<' and node.right_char == '>':
-			self.build_add_edge(n1, n2, node.value, g)
-			self.build_add_edge(n2, n1, node.value, g)
+			self.build_add_edge(n1, n2, node.data, g)
+			self.build_add_edge(n2, n1, node.data, g)
 			
 		return n1
 	
@@ -142,9 +148,9 @@ class GraphBuilder:
 				g = self.graph_init.__call__()
 		else:
 			if self.graph_directed:
-				g = nx.DiGraph()
+				g = nx.MultiDiGraph()
 			else:
-				g = nx.Graph()
+				g = nx.MultiGraph()
 		
 		self.parse(self.ast, g)
 		

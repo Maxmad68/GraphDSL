@@ -5,11 +5,10 @@
 from Factory import Graph
 import networkx as nx
 		
-@Graph(directed=True, graph_init=lambda: nx.ladder_graph(5))
+@Graph(directed=True)
 def g():
-	a = (1)
-	a -{}> a
-	
+	(1, {color:'red'})	-{coucou:42}>	(2, {color: 'blue'})		-{}>		(3, {color:'yellow'})
+		
 
 
 p = g()
@@ -25,7 +24,7 @@ import matplotlib.pyplot
 
 fig = matplotlib.pyplot.figure()
 pos = nx.spring_layout(p)
-nx.draw(p, pos, ax=fig.add_subplot())
+nx.draw(p, pos, ax=fig.add_subplot(), node_color=[node[1]['color'] for node in p.nodes(data=True)])
 nx.draw_networkx_edge_labels(p, pos)
 nx.draw_networkx_labels(p, pos)
 

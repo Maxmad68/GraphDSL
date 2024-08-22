@@ -49,12 +49,32 @@ class GraphCompiler:
 	
 		closing = next(self.tokens, None)
 		if closing is None:
-			raise GraphSyntaxException.Expected('")"')
-		elif not (closing.type == tokenize.OP and closing.string == ')'):
-			raise GraphSyntaxException.Expected('")"', closing.string)
+			raise GraphSyntaxException.Expected('")",","')
 			
-		return GraphAstNodedef(val)
-		
+		elif not (closing.type == tokenize.OP and closing.string in (')',',')):
+			raise GraphSyntaxException.Expected('")",","', closing.string)
+			
+		elif closing.type == tokenize.OP and closing.string == ')': # (42)
+			return GraphAstNodedef(val, None)
+		elif closing.type == tokenize.OP and closing.string == ',': # (42, {abc:def})
+			n = next(self.tokens, None)
+			if n is None:
+				raise GraphSyntaxException.Expected('"{"')
+			elif not (n.type == tokenize.OP and n.string == '{'):
+				raise GraphSyntaxException.Expected('"{",","', n)
+				
+			data = self.parse_dict()
+			
+			n = next(self.tokens, None)
+			if n is None:
+				raise GraphSyntaxException.Expected('")"')
+			elif not (n.type == tokenize.OP and n.string == ')'):
+				raise GraphSyntaxException.Expected('")"', n)
+				
+			return GraphAstNodedef(val, data)
+			
+			
+				
 	def parse_value(self, n=None):
 		
 		if n is None:
@@ -70,21 +90,16 @@ class GraphCompiler:
 		
 		return GraphAstLitteralValue(val)
 	
-	def parse_edge_data(self):
-		n = next(self.tokens, None)
-		if n is None:
-			raise GraphSyntaxException.Expected('"{"')
-		if not (n.type == tokenize.OP and n.string == '{'):
-			raise GraphSyntaxException.Expected('"{"', n.string) 
-			
+	
+	def parse_dict(self):
 		data = {}	
-			
+		
 		n = next(self.tokens, None)
 		while n is None or not (n.type == tokenize.OP and n.string == '}'):
 			
 			if n is None:
 				raise GraphSyntaxException.Expected('"}", (name)')
-			
+				
 			if n.type == tokenize.NAME:
 				key = n.string
 				n = next(self.tokens, None)
@@ -93,7 +108,7 @@ class GraphCompiler:
 					raise GraphSyntaxException.Expected('":"')
 				if not (n.type == tokenize.OP and n.string == ':'):
 					raise GraphSyntaxException.Expected('":"', n)
-				
+					
 				val = self.parse_value()
 				data[key] = val
 				
@@ -111,10 +126,22 @@ class GraphCompiler:
 			elif (n.type == tokenize.OP and n.string == '}'):
 				break
 			
-				
+			
 			
 		return data
 	
+	
+	def parse_edge_data(self):
+		n = next(self.tokens, None)
+		if n is None:
+			raise GraphSyntaxException.Expected('"{"')
+		if not (n.type == tokenize.OP and n.string == '{'):
+			raise GraphSyntaxException.Expected('"{"', n.string) 
+			
+		data = self.parse_dict()
+		return data
+		
+		
 	def parse_edge(self, left_token, left_node):
 		data = self.parse_edge_data()
 		

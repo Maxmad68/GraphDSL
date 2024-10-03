@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import inspect
+import marshal
 from io import BytesIO
 from Builder import GraphBuilder
 from Compiler import GraphCompiler
@@ -42,8 +43,7 @@ class GraphFactory:
 		
 		builder.parameters = {**parameters}
 		return builder.build()
-	
-	
+		
 	
 def Graph(**kwargs):
 	def wrapper(f):

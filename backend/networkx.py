@@ -29,9 +29,11 @@ class NetworkXBackend(Backend):
 		return nx.MultiGraph()
 	
 	def add_node(self, graph, value, data):
-		identifier = id(value)
 		if value is None:
-			identifier = value = uuid.uuid4()
+			value = len(self.nodes)
+		
+		identifier = value
+		
 			
 		if data is None:
 			graph.add_node(value)
@@ -47,7 +49,7 @@ class NetworkXBackend(Backend):
 		node2 = self.nodes[n2]
 		
 		graph.add_edge(node1, node2, **data)
-		
+
 	
 default = NetworkXBackend
 	

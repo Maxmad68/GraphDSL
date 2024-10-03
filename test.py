@@ -8,15 +8,12 @@ import backend.igraph
 import networkx as nx
 		
 		
-@Graph(
-	directed=False,
-)
+@Graph(directed=True, debug_tokens=True)
 def g():
-	a = ()
-	b = ()
-	c = ()
-	
-	a -{}- b -{}- c -{}- a
+	(1) -{}> (2)
+
+
+
 
 
 print (g.ast)

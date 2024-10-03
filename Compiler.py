@@ -225,7 +225,7 @@ class GraphCompiler:
 	
 #		print ('\t end', t)
 	
-	
+			
 	def parse_graph(self):
 		'''
 			graph: node (nl+ node)*

@@ -3,6 +3,7 @@
 
 import tokenize
 from GraphAst import *
+
 from Exceptions import *
 
 class GraphCompiler:
@@ -95,7 +96,7 @@ class GraphCompiler:
 	
 	
 	def parse_dict(self):
-		data = {}	
+		data = {}
 		
 		n = next(self.tokens, None)
 		while n is None or not (n.type == tokenize.OP and n.string == '}'):
@@ -103,7 +104,7 @@ class GraphCompiler:
 			if n is None:
 				raise GraphSyntaxException.Expected('"}", (name)')
 				
-			if n.type == tokenize.NAME:
+			if n.type == tokenize.NAME or n.type == tokenize.STRING:
 				key = n.string
 				n = next(self.tokens, None)
 				
@@ -122,6 +123,7 @@ class GraphCompiler:
 				elif (n.type == tokenize.OP and n.string == '}'):
 					break
 				elif (n.type == tokenize.OP and n.string == ','):
+					n = next(self.tokens, None)
 					continue
 				else:
 					raise GraphSyntaxException.Expected('",", "}"', n)

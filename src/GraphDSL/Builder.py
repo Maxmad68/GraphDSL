@@ -82,7 +82,6 @@ class GraphBuilder:
 	
 	
 	def parse_node(self, node, g):
-		print (node)
 		assert isinstance(node, GraphNode)
 		
 		if isinstance(node, GraphAstNodedef):

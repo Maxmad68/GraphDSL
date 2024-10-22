@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
-from factory import Graph
+from GraphDSL.factory import Graph
 import GraphDSL.backend.networkx
 import GraphDSL.backend.igraph
 import networkx as nx
@@ -11,7 +11,7 @@ import timeit
 		
 @Graph(directed=True)
 def g(c, l):
-	(42) -{}> (84)
+	(42, {de:89}) -{ab:a}> (84)
 	
 
 

@@ -3,9 +3,9 @@
 import unittest
 import context
 
-from Factory import Graph
-from GraphAst import *
-from Exceptions import *
+from GraphDSL.Factory import Graph
+from GraphDSL.GraphAst import *
+from GraphDSL.Exceptions import *
 
 class TestCompilingMethods(unittest.TestCase):
 	

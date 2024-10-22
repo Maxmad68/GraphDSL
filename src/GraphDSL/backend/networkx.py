@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from .abstract import Backend
-from Exceptions import GraphBackendException
+from GraphDSL.exceptions import GraphBackendException
 import uuid
 
 try:
@@ -53,3 +53,17 @@ class NetworkXBackend(Backend):
 	
 default = NetworkXBackend
 	
+	
+def draw_nx(p):
+	from networkx.drawing.nx_agraph import write_dot
+	import networkx as nx
+	
+	import matplotlib
+	import matplotlib.pyplot
+	
+	fig = matplotlib.pyplot.figure()
+	pos = nx.spring_layout(p)
+	labels = {n: p.nodes[n].get('label', n) for n in p.nodes()}
+	colors = [node[1].get('color','black') for node in p.nodes(data=True)]
+	nx.draw(p, pos, ax=fig.add_subplot(), labels=labels, node_color=colors)
+	nx.draw_networkx_edge_labels(p, pos)

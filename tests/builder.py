@@ -4,8 +4,8 @@ import unittest
 import unittest.mock
 import context
 
-from Factory import Graph
-from backend.abstract import Backend
+from GraphDSL.Factory import Graph
+from GraphDSL.backend.abstract import Backend
 
 backend = Backend
 

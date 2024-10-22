@@ -4,9 +4,10 @@
 import inspect
 import marshal
 from io import BytesIO
-from Builder import GraphBuilder
-from Compiler import GraphCompiler
-import backend.networkx
+
+from GraphDSL.builder import GraphBuilder
+from GraphDSL.compiler import GraphCompiler
+from GraphDSL.backend import networkx as nxbackend
 
 class GraphFactory:
 	def __init__(self, f, **kwargs):
@@ -30,7 +31,7 @@ class GraphFactory:
 		
 		self.ast = self.parser.compile_to_ast()
 		
-	def __call__(self, parameters={}, backend=backend.networkx, **kwargs):
+	def __call__(self, parameters={}, backend=nxbackend, **kwargs):
 		
 		graph_init = kwargs.get('graph_init', None)
 		

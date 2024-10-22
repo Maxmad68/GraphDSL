@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 import tokenize
-from GraphAst import *
+from GraphDSL.graphAst import *
 
-from Exceptions import *
+from GraphDSL.exceptions import *
 
 class GraphCompiler:
 	def __init__(self, source, debug_tokens=False, **kwargs):

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from .abstract import Backend
-from Exceptions import GraphBackendException
+from GraphDSL.exceptions import GraphBackendException
 
 try:
 	import igraph as ig

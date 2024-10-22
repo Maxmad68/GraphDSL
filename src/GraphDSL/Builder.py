@@ -3,7 +3,7 @@
 
 from types import ModuleType
 
-from GraphAst import *
+from GraphDSL.graphAst import *
 
 class GraphBuilder:
 	def __init__(self, ast, backend, **kwargs):

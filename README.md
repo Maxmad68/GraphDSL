@@ -6,7 +6,7 @@ With this library, you can create graphs leveraging Python's syntax, making it e
 
 ## Installation
 
-`pip install graphdsl`
+`pip install GraphDSL`
 
 ## Usage
 

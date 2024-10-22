@@ -4,7 +4,7 @@
 
 [project]
 	name = "GraphDSL"
-	version = "0.0.1"
+	version = "1.0.0"
 	authors = [
 	  { name="Maxmad68", email="maxime@madrau.fr" },
 	]
